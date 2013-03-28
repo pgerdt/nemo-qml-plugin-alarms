@@ -34,6 +34,7 @@
 #define ALARMHANDLERINTERFACE_H
 
 #include <QtGlobal>
+#include <QDBusAbstractAdaptor>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 # include <timed-voland-qt5/interface>
@@ -45,6 +46,7 @@
 #endif
 
 class VolandAdaptor;
+class VolandSignalAdaptor;
 class AlarmDialogObject;
 
 namespace Maemo {
@@ -70,6 +72,9 @@ public:
     Q_PROPERTY(QObjectList activeDialogs READ activeDialogs NOTIFY activeDialogsChanged)
     QObjectList activeDialogs() const;
 
+    Q_INVOKABLE void dialogOnScreen();
+    Q_INVOKABLE void dialogNotOnScreen();
+
 signals:
     /*!
      *  \qmlsignal void AlarmHandler::alarmReady(AlarmDialog alarm)
@@ -88,12 +93,15 @@ signals:
 
     void activeDialogsChanged();
 
+    void visual_reminders_status(int status);
+
 private slots:
     void dialogClosed(QObject *alarm);
     void setupInterface();
 
 private:
     VolandAdaptor *adaptor;
+    VolandSignalAdaptor *signalAdaptor;
     QHash<int, AlarmDialogObject*> dialogs;
 
     friend class VolandAdaptor;
@@ -119,6 +127,18 @@ public:
     virtual bool open(const Maemo::Timed::Voland::Reminder &data);
     virtual bool open(const QList<QVariant> &data);
     virtual bool close(uint cookie);
+};
+
+class VolandSignalAdaptor:  public QDBusAbstractAdaptor
+{
+    Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "com.nokia.voland.signal")
+
+public:
+    VolandSignalAdaptor(QObject *parent);
+
+signals:
+    void visual_reminders_status(int status);
 };
 
 #endif
