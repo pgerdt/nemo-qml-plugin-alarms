@@ -47,6 +47,7 @@
 
 class VolandAdaptor;
 class VolandSignalAdaptor;
+class VolandSignalWrapper;
 class AlarmDialogObject;
 
 namespace Maemo {
@@ -81,7 +82,6 @@ public:
      *  that the display may be turned off.
      */
     Q_PROPERTY(bool dialogOnScreen READ dialogOnScreen WRITE setDialogOnScreen NOTIFY dialogOnScreenChanged)
-
     bool dialogOnScreen();
     void setDialogOnScreen(bool onScreen);
 
@@ -111,7 +111,7 @@ private slots:
 
 private:
     VolandAdaptor *adaptor;
-    VolandSignalAdaptor *signalAdaptor;
+    VolandSignalWrapper *signalWrapper;
     QHash<int, AlarmDialogObject*> dialogs;
     bool m_dialogOnScreen;
 
@@ -138,6 +138,19 @@ public:
     virtual bool open(const Maemo::Timed::Voland::Reminder &data);
     virtual bool open(const QList<QVariant> &data);
     virtual bool close(uint cookie);
+};
+
+class VolandSignalWrapper: public QObject
+{
+    Q_OBJECT
+
+public:
+    VolandSignalWrapper(QObject *parent);
+    void setupInterface();
+
+signals:
+    void visual_reminders_status(int status);
+    void error(const QString &message);
 };
 
 class VolandSignalAdaptor:  public QDBusAbstractAdaptor
