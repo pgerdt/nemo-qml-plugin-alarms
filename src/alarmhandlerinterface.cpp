@@ -34,8 +34,12 @@
 #include "alarmdialogobject.h"
 #include <QTimer>
 
-AlarmHandlerInterface::AlarmHandlerInterface(QDeclarativeItem *parent)
-    : QDeclarativeItem(parent),
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+Q_DECLARE_METATYPE(QList<QObject *>)
+#endif
+
+AlarmHandlerInterface::AlarmHandlerInterface(QObject *parent)
+    : QObject(parent),
       adaptor(new VolandAdaptor(this)),
       signalWrapper(new VolandSignalWrapper(this)),
       m_dialogOnScreen(false)
@@ -129,9 +133,9 @@ void AlarmHandlerInterface::dialogClosed(QObject *obj)
     emit activeDialogsChanged();
 }
 
-QObjectList AlarmHandlerInterface::activeDialogs() const
+QList<QObject *> AlarmHandlerInterface::activeDialogs() const
 {
-    QObjectList re;
+    QList<QObject *> re;
     re.reserve(dialogs.size());
     foreach (AlarmDialogObject *dialog, dialogs)
         re.append(dialog);

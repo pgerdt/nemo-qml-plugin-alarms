@@ -35,14 +35,10 @@
 
 #include <QtGlobal>
 #include <QDBusAbstractAdaptor>
-
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 # include <timed-voland-qt5/interface>
-# include <QQuickItem>
-# define QDeclarativeItem QQuickItem
 #else
 # include <timed-voland/interface>
-# include <QDeclarativeItem>
 #endif
 
 class VolandAdaptor;
@@ -58,20 +54,21 @@ namespace Maemo {
     }
 }
 
-class AlarmHandlerInterface : public QDeclarativeItem
+class AlarmHandlerInterface : public QObject
 {
     Q_OBJECT
 
 public:
-    AlarmHandlerInterface(QDeclarativeItem *parent = 0);
+    AlarmHandlerInterface(QObject *parent = 0);
+
 
     /*!
-     *  \qmlproperty QObjectList AlarmHandler::activeDialogs
+     *  \qmlproperty QList<Object *> AlarmHandler::activeDialogs
      *
      *  A list of \a AlarmDialogObject instances for active alarm dialogs.
      */
-    Q_PROPERTY(QObjectList activeDialogs READ activeDialogs NOTIFY activeDialogsChanged)
-    QObjectList activeDialogs() const;
+    Q_PROPERTY(QList<QObject *>  activeDialogs READ activeDialogs NOTIFY activeDialogsChanged)
+    QList<QObject *> activeDialogs() const;
 
     /*!
      *  \qmlproperty bool AlarmHandler::dialogOnScreen
