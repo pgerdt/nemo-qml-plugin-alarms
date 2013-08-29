@@ -22,7 +22,7 @@ BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  pkgconfig(Qt5Test)
-BuildRequires:  pkgconfig(timed-qt5)
+BuildRequires:  pkgconfig(timed-qt5) >= 2.66
 
 %description
 %{summary}.

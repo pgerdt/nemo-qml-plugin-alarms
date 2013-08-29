@@ -70,6 +70,8 @@ inline static bool alarmSort(AlarmObject *a1, AlarmObject *a2)
 AlarmsBackendModelPriv::AlarmsBackendModelPriv(AlarmsBackendModel *m)
     : QObject(m), q(m), populated(false)
 {
+    connect(TimedInterface::instance(), SIGNAL(alarmTriggersChanged(QMap<quint32,quint32>)),
+            this, SLOT(alarmTriggersChanged(QMap<quint32,quint32>)));
     populate();
 }
 
@@ -133,6 +135,14 @@ void AlarmsBackendModelPriv::attributesReply(QDBusPendingCallWatcher *call)
     if (!populated) {
         populated = true;
         emit q->populatedChanged();
+    }
+}
+
+void AlarmsBackendModelPriv::alarmTriggersChanged(QMap<quint32, quint32> triggerMap)
+{
+    foreach (AlarmObject *alarm, alarms) {
+        if (!triggerMap.contains(alarm->id()))
+            alarm->setEnabled(false);
     }
 }
 

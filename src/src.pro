@@ -27,10 +27,12 @@ SOURCES += $$SRCDIR/plugin.cpp \
     $$SRCDIR/alarmsbackendmodel_p.cpp \
     $$SRCDIR/alarmobject.cpp \
     $$SRCDIR/alarmhandlerinterface.cpp \
-    $$SRCDIR/alarmdialogobject.cpp
+    $$SRCDIR/alarmdialogobject.cpp \
+    $$SRCDIR/interface.cpp
 
 HEADERS += $$SRCDIR/alarmsbackendmodel.h \
     $$SRCDIR/alarmsbackendmodel_p.h \
     $$SRCDIR/alarmobject.h \
     $$SRCDIR/alarmhandlerinterface.h \
-    $$SRCDIR/alarmdialogobject.h
+    $$SRCDIR/alarmdialogobject.h \
+    $$SRCDIR/interface.h

@@ -50,14 +50,6 @@
 #include "alarmdialogobject.h"
 #include "interface.h"
 
-TimedInterface *TimedInterface::instance()
-{
-    static TimedInterface *timed = 0;
-    if (!timed)
-        timed = new TimedInterface;
-    return timed;
-}
-
 class Q_DECL_EXPORT NemoAlarmsPlugin : public QDeclarativeExtensionPlugin
 {
     Q_OBJECT
