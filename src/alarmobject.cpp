@@ -43,7 +43,7 @@
 #endif
 
 AlarmObject::AlarmObject(QObject *parent)
-    : QObject(parent), m_hour(0), m_minute(0), m_enabled(false),
+    : QObject(parent), m_hour(0), m_minute(0), m_second(0), m_enabled(false),
       m_createdDate(QDateTime::currentDateTime()), m_countdown(false), m_triggerTime(0),
       m_elapsed(0), m_cookie(0)
 {
@@ -67,8 +67,9 @@ AlarmObject::AlarmObject(const QMap<QString,QString> &data, QObject *parent)
             m_elapsed = it.value().toInt();
         else if (it.key() == "timeOfDay") {
             int value = it.value().toInt();
-            m_hour = value / 60;
-            m_minute = value % 60;
+            m_hour = value / 3600;
+            m_minute = (value % 3600) / 60;
+            m_second = value % 60;
         } else if (it.key() == "STATE") {
             if (it.value() == "TRANQUIL" || it.value() == "WAITING")
                 m_enabled = false;
@@ -111,6 +112,15 @@ void AlarmObject::setMinute(int minute)
         return;
 
     m_minute = minute;
+    emit timeChanged();
+}
+
+void AlarmObject::setSecond(int second)
+{
+    if (m_second == second)
+        return;
+
+    m_second = second;
     emit timeChanged();
 }
 
@@ -178,7 +188,8 @@ void AlarmObject::save()
         if (!m_title.isEmpty())
             ev.setAttribute(QLatin1String("TITLE"), m_title);
 
-        ev.setAttribute(QLatin1String("timeOfDay"), QString::number(m_hour * 60 + m_minute));
+        ev.setAttribute(QLatin1String("timeOfDay"),
+                        QString::number(m_hour * 3600 + m_minute * 60 + m_second));
         ev.setAttribute(QLatin1String("APPLICATION"), QLatin1String("nemoalarms"));
         ev.setAttribute(QLatin1String("createdDate"), m_createdDate.toString());
         ev.setAlarmFlag();
@@ -191,6 +202,7 @@ void AlarmObject::save()
 
             if (m_enabled) {
                 Maemo::Timed::Event::Recurrence rec = ev.addRecurrence();
+
                 rec.addHour(m_hour);
                 rec.addMinute(m_minute);
                 rec.everyDayOfMonth();
@@ -213,7 +225,7 @@ void AlarmObject::save()
             }
             ev.setAttribute(QLatin1String("type"), QLatin1String("clock"));
         } else {
-            uint duration = m_hour * 3600 + m_minute * 60;
+            uint duration = m_hour * 3600 + m_minute * 60 + m_second;
             QDateTime now = QDateTime::currentDateTimeUtc();
             if (m_enabled) {
                 QDateTime triggerDateTime = now.addSecs(duration - m_elapsed);

@@ -62,7 +62,7 @@ public:
      *  Hour component of the alarm time
      *
      *  An alarm will trigger when the device time is next at the specified
-     *  hour and minute, after being enabled. Alarm time is independent of
+     *  hour, minute and second, after being enabled. Alarm time is independent of
      *  timezones.
      */
     Q_PROPERTY(int hour READ hour WRITE setHour NOTIFY timeChanged)
@@ -74,12 +74,26 @@ public:
      *  Minute component of the alarm time
      *
      *  An alarm will trigger when the device time is next at the specified
-     *  hour and minute, after being enabled. Alarm time is independent of
+     *  hour, minute and second, after being enabled. Alarm time is independent of
      *  timezones.
      */
     Q_PROPERTY(int minute READ minute WRITE setMinute NOTIFY timeChanged)
     int minute() const { return m_minute; }
     void setMinute(int minute);
+
+    /*!
+     *  \qmlproperty int Alarm::second
+     *  Second component of the alarm time in a countdown alarm
+     *
+     *  An countdown alarm will trigger when the device time is next at the specified
+     *  hour, minute and second, after being enabled. Alarm time is independent of
+     *  timezones.
+     *
+     *  \sa countdown
+     */
+    Q_PROPERTY(int second READ second WRITE setSecond NOTIFY timeChanged)
+    int second() const { return m_second; }
+    void setSecond(int second);
 
     /*!
      *  \qmlproperty string Alarm::daysOfWeek
@@ -241,7 +255,7 @@ private slots:
 
 protected:
     QString m_title;
-    int m_hour, m_minute;
+    int m_hour, m_minute, m_second;
     QString m_daysOfWeek;
     bool m_enabled;
     QDateTime m_createdDate;
